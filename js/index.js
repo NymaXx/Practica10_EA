@@ -20,29 +20,43 @@ registrarCandidato = () => {
     let nombre = nameReg.value;
 
     let obj = {ID: id, Nombre: nombre};
+    let objVotes = {ID: id, Cantidad: 0};
     database.ref('Candidatos/' + id).set(obj);
-    //database.ref('Candidatos/A1').set(obj);
+    database.ref('Votos/' + id).set(objVotes);
+
 }
 
 verCandidatos= () => {
     database.ref('Candidatos').on('value', (data) => {
         data.forEach(
             (id)=>{
-                console.log(id.val());
+                let list = id.val().Nombre;
+                alert(list);
             }
         );
     });
 }
 
-verVotos = () => {
-    database.ref('Candidatos').on('value', (votes) => {
-        console.log(votes.val());
-        alert(votes.val());
+votarPorId = () => {
+    let id = idVote.value;
+    
+    database.ref('Votos').on('value', (dataVote)=>{
+        dataVote.forEach(
+            (idv)=>{
+                let candidato = idv.val().ID;
+
+                if(id == candidato){
+                    database.ref('Votos/' + id).on('value', data.val().Cantidad);   
+                };
+            }
+        );
     });
+
 }
+    
 
 //listeners de los botones
 ETbotonRegistrar.addEventListener('click', registrarCandidato);
 verNombresButton.addEventListener('click',verCandidatos);
-verVotosButton.addEventListener('click',verVotos);
+voteButton.addEventListener('click', votarPorId);
 
